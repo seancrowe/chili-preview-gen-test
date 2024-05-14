@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 
 const noAutomaticPreviewForNewItems = true;
 const docsToTest = 96;
+const savedInEditor = false;
 const downloadPreviewFiles = true;
 
 const config = JSON.parse(await (await fs.open("./config.json")).readFile("utf8"));
@@ -53,7 +54,11 @@ const docsUploaded = []
 
 for (var i = 0; i < docsToTest; i++) {
 
-  const docXml = await fs.readFile(`./docs/${getRandomDoc(docs)}`, "utf8");
+  const docXmlOrg = await fs.readFile(`./docs/${getRandomDoc(docs)}`, "utf8");
+
+  const docXml = docXmlOrg.replace(
+    (savedInEditor ? "savedInEditor=\"false\"" : "savedInEditor=\"true\""),
+    (savedInEditor ? "savedInEditor=\"true\"" : "savedInEditor=\"false\""))
 
   docsUploaded.push(connector.api.resourceItemAdd({
     xml: docXml,
